@@ -93,7 +93,7 @@ ORDER BY art.CODE_ARTICLE, stp.COULEUR, stp.TAILLE, stp.STOCK;
 SELECT MAX(PRIX) 
 FROM stockprix
 
---Etape 17
+-- Etape 17
 SELECT art.CODE_ARTICLE, art.DESIGNATION, col.DESIGNATION AS "Couleur", tai.DESIGNATION AS "Taille", stp.STOCK, stp.PRIX
 FROM stockprix stp
 JOIN articles art ON stp.ARTICLE = art.ID_ARTICLE
@@ -104,4 +104,35 @@ WHERE stp.PRIX = (SELECT MAX(PRIX)
 ORDER BY art.CODE_ARTICLE, stp.COULEUR, stp.TAILLE, stp.STOCK;
 
 -- Etape 18
-USE mezabi2;
+update stockprix
+set PRIX = PRIX * 0.9;
+
+SELECT art.CODE_ARTICLE, art.DESIGNATION, col.DESIGNATION AS "Couleur", tai.DESIGNATION AS "Taille", stp.STOCK, stp.PRIX
+FROM stockprix stp
+JOIN articles art ON stp.ARTICLE = art.ID_ARTICLE
+JOIN a_tailles tai ON stp.TAILLE = tai.CODE_TAILLE
+JOIN a_couleurs col ON stp.COULEUR = col.CODE_COULEUR
+ORDER BY art.CODE_ARTICLE, stp.COULEUR, stp.TAILLE, stp.STOCK;
+
+-- Etape 19
+select fe.NO_FCT, fe.DATE_FCT, c.NOM_MAGASIN, c.RESPONSABLE, a.CODE_ARTICLE, a.DESIGNATION, ac.DESIGNATION,
+        t.DESIGNATION, fl.QUANTITE, fl.PRIX, (fl.QUANTITE * fl.PRIX) AS Montant
+from factures_entetes fe
+join clients c on c.ID_CLIENT = fe.CLIENT
+join factures_lignes fl on fe.ID_ENT_FCT = fl.ID_FCT
+join articles a on a.ID_ARTICLE = fl.ARTICLE
+join a_tailles t on t.CODE_TAILLE = fl.TAILLE
+join a_couleurs ac on ac.CODE_COULEUR = fl.COULEUR
+;
+
+-- Etape 20
+select fe.NO_FCT, fe.DATE_FCT, c.NOM_MAGASIN, c.RESPONSABLE, SUM(fl.QUANTITE * fl.PRIX) AS Montant
+from factures_entetes fe
+join clients c on c.ID_CLIENT = fe.CLIENT
+join factures_lignes fl on fe.ID_ENT_FCT = fl.ID_FCT
+join articles a on a.ID_ARTICLE = fl.ARTICLE
+join a_tailles t on t.CODE_TAILLE = fl.TAILLE
+join a_couleurs ac on ac.CODE_COULEUR = fl.COULEUR
+group by fe.NO_FCT
+order by fe.NO_FCT
+;
