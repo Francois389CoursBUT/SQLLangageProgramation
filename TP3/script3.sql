@@ -45,7 +45,7 @@ BEGIN
 END; //
 DELIMITER ;
 
---Si ausune facture, renvoie null
+-- Si ausune facture, renvoie null
 USE mezabi3;
 SELECT MAX(MOD(NO_FCT,1000))+1
 FROM factures_entetes

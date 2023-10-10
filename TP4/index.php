@@ -15,12 +15,12 @@
 <?php
     // Connexion à la base de données
     $host="localhost"; //IP du serveur
-    $db="mezabi3";     //Nom de la base de données
+    $db="mezabi3";     //Nom de la base de donn&ées
     $user="root";      //Nom de l'utilisateur
     $pass="root";      //Mot de passe de l'utilisateur
     $charset="utf8mb4";//Jeu de caractères utilisé par la base de données
 
-    // Réglage des options
+    // R&eacute;glage des options
     $options=[
         PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC,
@@ -31,7 +31,7 @@
     try {
         echo '<div class="container-fluid">';
         $pdo = new PDO($dns, $user, $pass, $options);
-        echo "<h1>Connecté</h1>";
+        echo "<h1>Connect&eacute;</h1>";
 
         echo "<h1> Etape 1 </h1>";
 
@@ -71,11 +71,11 @@
 //======================================================================================================================
 //======================================================================================================================
 
-        echo "<h1> Etape 2 </h1>";
+        echo "<h1> &Eacute;tape 2 </h1>";
 
         /**
          * Affiche une vignette avec les informations du client
-         * La vignette est reponsive
+         * La vignette est responsive
          * @param $id
          * @param $codeClient
          * @param $nomMagasin
@@ -89,11 +89,12 @@
             echo '<div class="col-md-4 col-sm-6 col-12 vignette">';
                 echo '<div class="">';
                     echo '<h5>'.$nomMagasin.'</h5>';
+                    echo '<strong>ID : </strong>'.$id.'<br>';
                     echo '<strong>Code client : </strong>'.$codeClient.'<br>';
                     echo '<strong>Adresse : </strong>'.$adresse1.'<br>';
                     echo '<strong>Adresse 2 : </strong>'.$adresse2.'<br>';
                     echo '<strong>Code postal / Ville : </strong>'.$codePostaleVille.'<br>';
-                    echo '<strong>Téléphone : </strong>'.$telephone.'<br>';
+                    echo '<strong>T&eacute;l&eacute;phone : </strong>'.$telephone.'<br>';
                     echo '<strong>Email : </strong>'.$email.'<br>';
                 echo '</div>';
             echo '</div>';
@@ -110,7 +111,7 @@
         echo '</div>';
 
     } catch (PDOException $e){
-        echo "<h1>Connexion échouée</h1>";
+        echo "<h1>Connexion &eacute;chou&eacute;e</h1>";
     }
 ?>
     </body>

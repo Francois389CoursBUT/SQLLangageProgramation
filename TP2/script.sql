@@ -32,19 +32,19 @@ INSERT INTO articles ( ID_ARTICLE, CODE_ARTICLE, DESIGNATION, CATEGORIE ) VALUES
     (2,"PTL002", "Pantalons taille basse", 1)
 ;
 
---Etape 6
+-- Etape 6
 INSERT INTO stockprix ( ARTICLE, COULEUR, TAILLE, PRIX, CODE_BARRE, STOCK ) VALUES
     (2,1,5,'35.90',"0000000000001",10),
     (2,3,4,'36.90',"0000000000002",150)
 ;
 
---Etape 7
+-- Etape 7
 UPDATE stockprix SET STOCK = 160 WHERE ARTICLE = 2 and COULEUR = 3 and taille = 4;
 
---Etape 8
+-- Etape 8
 DELETE FROM stockprix WHERE COULEUR = 1;
 
---Etape 9
+-- Etape 9
 DELETE FROM stockprix WHERE ARTICLE = 2;
 DELETE FROM articles WHERE ID_ARTICLE = 2;
 
@@ -59,12 +59,12 @@ DROP TABLE devis_lignes, factures_lignes, factures_entetes, devis_entetes, stock
 SELECT CODE_ARTICLE, DESIGNATION
 FROM articles
 WHERE CATEGORIE = 3;
---Output
---CODE_ARTICLE	DESIGNATION
---TSBATMAN	Tee-shirt Batman
---TSUPER	Tee-shirt Superman
+-- Output
+-- CODE_ARTICLE	DESIGNATION
+-- TSBATMAN	Tee-shirt Batman
+-- TSUPER	Tee-shirt Superman
 
---Etape 13
+-- Etape 13
 SELECT art.CODE_ARTICLE, art.DESIGNATION, cat.DESIGNATION
 FROM articles art
 JOIN a_categories cat
@@ -91,7 +91,7 @@ ORDER BY art.CODE_ARTICLE, stp.COULEUR, stp.TAILLE, stp.STOCK;
 
 -- Etape 16
 SELECT MAX(PRIX) 
-FROM stockprix
+FROM stockprix ;
 
 -- Etape 17
 SELECT art.CODE_ARTICLE, art.DESIGNATION, col.DESIGNATION AS "Couleur", tai.DESIGNATION AS "Taille", stp.STOCK, stp.PRIX

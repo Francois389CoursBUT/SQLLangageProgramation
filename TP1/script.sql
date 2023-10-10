@@ -16,14 +16,14 @@ CREATE TABLE IF NOT EXISTS a_couleurs (
     PRIMARY KEY (code_couleur)
 );
 
---Etape 4
+-- Etape 4
 CREATE TABLE IF NOT EXISTS a_taille (
     code_taille INT(10) NOT NULL AUTO_INCREMENT,
     taille VARCHAR(3) NOT NULL,
     PRIMARY KEY (code_taille)
 );
 
---Etape 5
+-- Etape 5
 CREATE TABLE IF NOT EXISTS articles (
     code_article int(15) NOT NULL AUTO_INCREMENT,
     designation VARCHAR(30) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS articles (
     CONSTRAINT fk_categorie FOREIGN KEY (categorie) REFERENCES a_categorie(code_categorie)
 );
 
---Etape 6 
+-- Etape 6
 CREATE TABLE IF NOT EXISTS stocksPrix (
     code_barre VARCHAR(13) NOT NULL,
     articles int(15) NOT NULL,
