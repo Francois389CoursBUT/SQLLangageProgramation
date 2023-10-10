@@ -1,0 +1,28 @@
+/* Importation de la police Google */
+@import url('https://fonts.googleapis.com/css?family=Righteous&display=swap');
+
+body{
+	color:#585976;									/* Couleur de la police Gris fonc� */
+	background: linear-gradient(#8EB3C8, white) no-repeat;	/* Arri�re plan d�grad� */
+	font-family: 'Righteous', cursive; 				/* Utilisation de la police Righteous */
+}
+
+td{
+	border-style:solid ; 	/* Bordure double */
+	border-width:3px;		/* Epaisseur bordure */
+	border-color:#1B4B67;	/* Couleur de la bordure */
+	border-radius: 5px;		/* Arrondissement des angles */
+	padding:5px;			/* Marge int�rieure */
+	text-align:center;  	/* Centrage du texte */
+}
+
+.centrer{
+	text-align:center;		/* Alignement texte centr� */
+}
+
+.taille50p {
+	width:50%
+}
+
+
+
