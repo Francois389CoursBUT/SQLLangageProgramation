@@ -4,10 +4,11 @@
         <meta charset="utf-8">
         <title>DEMO PDO 1</title>
 
+        <!-- Lien vers Bootstrap CSS -->
+        <link href="../bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">
+
         <!-- Lien vers mon CSS -->
         <link href="css/monStyle.css" rel="stylesheet">
-
-
     </head>
 
     <body>
@@ -28,6 +29,7 @@
     $dns="mysql:host=$host;dbname=$db;charset=$charset";
 
     try {
+        echo '<div class="container-fluid">';
         $pdo = new PDO($dns, $user, $pass, $options);
         echo "<h1>Connecté</h1>";
 
@@ -36,18 +38,20 @@
         $requete="SELECT * FROM clients";
         $resultat = $pdo->query($requete);
 
+        echo "<div class='row'>";
 
-        echo "<table>";
+
+        echo '<table class="table table-striped">';
         // En tete du tableau
         echo "<tr>";
-        echo "    <th>ID_CLIENT</th>";
-        echo "    <th>CODE_CLIENT</th>";
-        echo "    <th>NOM_MAGASIN</th>";
-        echo "    <th>ADRESSE_1</th>";
-        echo "    <th>ADRESSE_2</th>";
-        echo "    <th>CODE_POSTAL / VILLE</th>";
-        echo "    <th>TELEPHONE</th>";
-        echo "    <th>EMAIL</th>";
+        echo '    <th scope="col">ID_CLIENT</th>';
+        echo '    <th scope="col">CODE_CLIENT</th>';
+        echo '    <th scope="col">NOM_MAGASIN</th>';
+        echo '    <th scope="col">ADRESSE_1</th>';
+        echo '    <th scope="col">ADRESSE_2</th>';
+        echo '    <th scope="col">CODE_POSTAL / VILLE</th>';
+        echo '    <th scope="col">TELEPHONE</th>';
+        echo '    <th scope="col">EMAIL</th>';
         echo "</tr>";
         while ($ligne = $resultat->fetch()) {
             echo "<tr>";
@@ -62,6 +66,48 @@
             echo "</tr>";
         }
         echo "</table>";
+        echo "</div>";
+
+//======================================================================================================================
+//======================================================================================================================
+
+        echo "<h1> Etape 2 </h1>";
+
+        /**
+         * Affiche une vignette avec les informations du client
+         * La vignette est reponsive
+         * @param $id
+         * @param $codeClient
+         * @param $nomMagasin
+         * @param $adresse1
+         * @param $adresse2
+         * @param $codePostaleVille
+         * @param $telephone
+         * @param $email
+         */
+        function vignette($id, $codeClient, $nomMagasin, $adresse1, $adresse2, $codePostaleVille, $telephone, $email) {
+            echo '<div class="col-md-4 col-sm-6 col-12 vignette">';
+                echo '<div class="">';
+                    echo '<h5>'.$nomMagasin.'</h5>';
+                    echo '<strong>Code client : </strong>'.$codeClient.'<br>';
+                    echo '<strong>Adresse : </strong>'.$adresse1.'<br>';
+                    echo '<strong>Adresse 2 : </strong>'.$adresse2.'<br>';
+                    echo '<strong>Code postal / Ville : </strong>'.$codePostaleVille.'<br>';
+                    echo '<strong>Téléphone : </strong>'.$telephone.'<br>';
+                    echo '<strong>Email : </strong>'.$email.'<br>';
+                echo '</div>';
+            echo '</div>';
+        }
+
+        $requete="SELECT * FROM clients";
+        $resultat = $pdo->query($requete);
+
+        echo '<div class="row">';
+        while ($ligne = $resultat->fetch()) {
+            vignette($ligne['ID_CLIENT'], $ligne['CODE_CLIENT'], $ligne['NOM_MAGASIN'], $ligne['ADRESSE_1'], $ligne['ADRESSE_2'], $ligne['CODE_POSTAL']. $ligne['VILLE'], $ligne['TELEPHONE'], $ligne['EMAIL']);
+        }
+        echo '</div>';
+        echo '</div>';
 
     } catch (PDOException $e){
         echo "<h1>Connexion échouée</h1>";

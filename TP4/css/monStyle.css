@@ -24,5 +24,17 @@ td{
 	width:50%
 }
 
+.vignette {
+	padding: 1%;
+}
 
+.vignette>div {
+	border-radius: 5px;
+	border: 2px solid #1B4B67;
+	width: 100%;
+	padding: 2%;
+}
 
+.container-fluid {
+	padding:0 5% 0 5%;
+}
