@@ -5,7 +5,7 @@
         <title>TP 5-Q3_TEST SQL dans un langage de programmation PDO</title>
 
         <!-- Bootstrap CSS -->
-        <link href="bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">
+        <link href="../bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">
 
         <!-- Lien vers mon CSS -->
         <link href="TP5-PDO.css" rel="stylesheet">

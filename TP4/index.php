@@ -110,7 +110,7 @@
         echo '</div>';
         echo '</div>';
 
-    } catch (PDOException $e){
+    } catch (PDOException $e) {
         ?>
         <div class="container-fluid">
             <div class="row">
@@ -130,7 +130,7 @@
                 <div class="col-4"></div>
             </div>
         </div>
-            <?php
+        <?php
     }
 ?>
     </body>

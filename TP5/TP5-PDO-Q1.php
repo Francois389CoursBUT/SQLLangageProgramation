@@ -10,12 +10,47 @@
         <!-- Lien vers mon CSS -->
         <link href="TP5-PDO.css" rel="stylesheet">
     </head>
-
     <body>
-        <div class="container">
+    <?php
+
+    /**
+     * Fonction qui affiche une option dans un select
+     * Si l'option est sélectionnée, on ajoute l'attribut selected
+     * @param $value : valeur de l'option
+     * @param $textDisplay : texte affiché dans l'option
+     * @param $isSelected : booléen qui indique si l'option est sélectionnée
+     */
+    function afficherOption($value, $textDisplay, $isSelected = false)
+    {
+        echo '<option value="' . $value ;
+        echo $isSelected ? '" selected>' :'">';
+        echo $textDisplay . '</option>';
+    }
+
+    //Connexions à la BD
+    $host = "localhost";
+    $db = "mezabi3";
+    $charset = "utf8mb4";
+    $user = "root";
+    $pwd = "root";
+
+    $options=[
+        PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES=>false];
+
+    $dns="mysql:host=$host;dbname=$db;charset=$charset";
+
+    try {
+        echo '<div class="container">';
+        $pdo = new PDO($dns, $user, $pwd, $options);
+
+
+    ?>
+
             <div class="col-12  cadre">
                 <h1>Formulaire d'inscription</h1><br>
-                <form method="post" action="TP5-PDO.php">
+                <form method="post" action="TP5-PDO-Q1.php">
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="codeClient">Code Client : </label>
@@ -63,10 +98,15 @@
                         <div class="form-group col-md-6">
                             <label for="categorie">Catégorie : </label>
                             <select name="categorie" class="form-control">
-                                <option value="0">Choisir dans la liste</option>
-                                <option value="1">Option 1</option>
-                                <option value="2">Option 2</option>
-                                <option value="3">Option 3</option>
+                                <option value="choisi">Choisir dans la liste</option>
+                                <?php
+                                $requete = "SELECT * FROM c_types;";
+                                $resultat = $pdo->query($requete);
+
+                                while ($categorie = $resultat->fetch()) {
+                                    afficherOption($categorie['CODE_TYPE'],$categorie['DESIGNATION'],false);
+                                }
+                                ?>
                             </select>
                         </div>
                         <div class="form-group col-md-3">
@@ -85,5 +125,29 @@
                 </form>
             </div>
         </div>
+    <?php
+    } catch (PDOException $e) {
+        ?>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 centrer">
+                    <h1>Connexion &eacute;chou&eacute;e</h1>
+                </div>
+                <div class="col-4"></div>
+                <div class="col-4">
+                    <p>
+                        Nous rencontrons actuellement des probl&egrave;mes de connexion &agrave; la base de donn&eacute;es.
+                        <br>
+                        Veuillez nous excuser pour la g&ecirc;ne occasionn&eacute;e.
+                        <br>
+                        Revenez plus tard.
+                    </p>
+                </div>
+                <div class="col-4"></div>
+            </div>
+        </div>
+            <?php
+    }
+    ?>
     </body>
 </html>
