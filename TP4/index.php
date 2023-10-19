@@ -60,7 +60,7 @@
                 echo "<td>".$ligne['NOM_MAGASIN']."</td>";
                 echo "<td>".$ligne['ADRESSE_1']."</td>";
                 echo "<td>".$ligne['ADRESSE_2']."</td>";
-                echo "<td>".$ligne['CODE_POSTAL']. $ligne['VILLE'] ."</td>";
+                echo "<td>".$ligne['CODE_POSTAL']." ". $ligne['VILLE'] ."</td>";
                 echo "<td>".$ligne['TELEPHONE']."</td>";
                 echo "<td>".$ligne['EMAIL']."</td>";
             echo "</tr>";
@@ -111,7 +111,26 @@
         echo '</div>';
 
     } catch (PDOException $e){
-        echo "<h1>Connexion &eacute;chou&eacute;e</h1>";
+        ?>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 centrer">
+                    <h1>Connexion &eacute;chou&eacute;e</h1>
+                </div>
+                <div class="col-4"></div>
+                <div class="col-4">
+                    <p>
+                        Nous rencontrons actuellement des probl&egrave;mes de connexion &agrave; la base de donn&eacute;es.
+                        <br>
+                        Veuillez nous excuser pour la g&ecirc;ne occasionn&eacute;e.
+                        <br>
+                        Revenez plus tard.
+                    </p>
+                </div>
+                <div class="col-4"></div>
+            </div>
+        </div>
+            <?php
     }
 ?>
     </body>

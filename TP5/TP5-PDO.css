@@ -1,0 +1,41 @@
+/* Importation de la police Google */
+@import url('https://fonts.googleapis.com/css?family=Righteous&display=swap');
+
+body {
+    color: #585976; /* Couleur de la police Gris foncé */
+    background: linear-gradient(#8EB3C8, white);
+    font-family: 'Righteous', cursive; /* Utilisation de la police Righteous */
+    min-height: 100vh;
+}
+
+.cadre {
+    border-style: solid; /* Bordure double */
+    border-width: 3px; /* Epaisseur bordure */
+    border-color: #1B4B67; /* Couleur de la bordure */
+    border-radius: 5px; /* Arrondissement des angles */
+    padding: 5px; /* Marge intérieure */
+    min-height: 200px; /* Hauteur minimale d'une boite */
+    margin: 2px; /* Marge à l'extérieur */
+}
+
+.enGras {
+    font-weight: bold; /* Ecriture en gras pour les intitulés des vignettes */
+}
+
+table {
+    width: 100%; /* Largeur de la table */
+}
+
+td {
+    padding: 4px; /* Marge intérieure pour les cellules du tableau */
+}
+
+th {
+    text-align: center; /* Alignement texte centré dans les entetes des tables */
+}
+
+.enRouge {
+    color: red;
+}
+
+

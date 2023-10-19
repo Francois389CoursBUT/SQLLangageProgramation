@@ -1,0 +1,7 @@
+        Aide fonctions PHP
+
+- strlen($mavariable) retourne la longueur d'une variable.
+- preg_match("/^(?:0[1-9]|[1-8]\d|9[0-8])\d{3}$/", $cdp) retourne faux si ce n'est pas un code postal valide.
+- filter_var($_POST["mail"], FILTER_VALIDATE_EMAIL) retourne faux si l'adresse mail n'est pas correcte.
+
+Pour le test de la catégorie, il faut récuperer dans le formulaire l'ID pour pouvoir insérer dans la table et non le libellé...
