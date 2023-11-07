@@ -31,8 +31,10 @@ inputNomMagasin.addEventListener('keypress', function (e) {
 })
 
 inputResponsable.addEventListener('keypress', function (e) {
+    console.log("change");
     if (inputResponsable.value.length  > 35 || inputResponsable.value === "") {
         inputResponsable.labels[0].classList.add('enRouge');
+        console.log("Erreur")
     } else {
         inputResponsable.labels[0].classList.remove('enRouge');
     }
