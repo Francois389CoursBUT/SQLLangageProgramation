@@ -17,10 +17,10 @@
      * @param PDO $pdo
      * @return false|PDOStatement
      */
-    function getListeCategorieFromBD(PDO $pdo)
+    function getListeCategorieFromBD(PDO $pdo):array
     {
         $categories = array();
-        $requete = "SELECT * FROM c_types;";
+        $requete = "SELECT * FROM c_types ORDER BY DESIGNATION;";
         $resultat = $pdo->query($requete);
 
         while ($ligne = $resultat->fetch()) $categories[$ligne['CODE_TYPE']] = $ligne['DESIGNATION'];
