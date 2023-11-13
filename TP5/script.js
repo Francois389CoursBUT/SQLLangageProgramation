@@ -8,6 +8,8 @@ const inputVille = document.getElementById('ville');
 const inputCategorie = document.getElementById('categorie');
 const inputTelephone = document.getElementById('noTel');
 const inputEmail = document.getElementById('mail');
+const selectionClientAModifier = document.getElementById('selectionClientAModifier');
+const formModifierClient = document.getElementById('formModifierClient');
 
 regexCodePostal = new RegExp("^(0[1-9]|[1-8]\\d|9[0-8])\\d{3}$",'gm');
 regexTelephone = new RegExp("^[0-9]{10}$",'gm');
@@ -94,3 +96,6 @@ inputEmail.addEventListener('blur', function (e) {
     }
 })
 
+selectionClientAModifier.addEventListener('change', function (e) {
+    formModifierClient.submit();
+});

@@ -136,21 +136,19 @@
                     <!-- Modification de client -->
                     <div class="col-12 cadre">
                         <h1>Modifier un client</h1>
-                        <form method="post" action="TP5-PDO-Q3.php">
+                        <form method="post" action="TP5-PDO-Q3.php" id="formModifierClient">
                             <div class="form-row">
                                 <div class="form-group col-12">
-                                    <label for="client">Client : </label><br>
-                                    <select name="cleClient" class="form-control" id="client">
-                                        <option value="none">Choisir dans la liste</option>
+
+                                    <label for="client">Selectionner un client à modifier </label><br>
+                                    <select name="cleClient" class="form-control" id="selectionClientAModifier">
+                                        <option value="none">Cr&eacute;er un nouveau client</option>
                                         <?php
                                         foreach ($clients as $idClient => $client) {
                                             afficherOption($idClient, $client['NOM_MAGASIN'], isset($_POST['cleClient']) && $_POST['cleClient'] == $idClient);
                                         }
                                         ?>
                                     </select>
-                                </div>
-                                <div class="form-group col-12">
-                                    <button type="submit" class="btn btn-primary btn-block">Modifier le client</button>
                                 </div>
                             </div>
                         </form>
@@ -246,7 +244,7 @@
 
                     $requeteModification->execute();
 
-                    echo '<p>Ligne modifier'.$requeteModification->rowCount().'</p></br>';
+                    echo '<p>Ligne modifier' . $requeteModification->rowCount() . '</p></br>';
                     echo '<p>Modification dans la base de donn&eacute;e effectu&eacute;</p></br>';
                     echo '<p>Identifiant d\'enregistrment modifi&eacute; : ' . $_POST['cleClient'];
                 } else {
