@@ -18,8 +18,32 @@
 
         include("fonctions.php");
 
-        $insertionClient = "INSERT INTO clients (CODE_CLIENT, NOM_MAGASIN, RESPONSABLE, ADRESSE_1, ADRESSE_2, CODE_POSTAL, VILLE, TYPE_CLIENT, TELEPHONE, EMAIL) VALUES (:codeClient, :nomMagasin, :responsable, :adresse1, :adresse2, :cdp, :ville, :categorie, :noTel, :mail);";
+        /**
+         * Fonction qui affoche un label et une saisie de texte
+         * @param string $label : texte du label
+         * @param string $placeholder : texte qui s'affiche dans la zone de saisie
+         * @param string $nomArgPOST : nom de l'argument POST qui contiendra la saisie
+         * @return void
+         */
+        function afficherSaisieTexte(string $label, string $placeholder, string $nomArgPOST, string $colonneBD)
+        {
+            global $champsValide, $modeModification, $clientAModifier;
+            echo '<label for="' . $nomArgPOST . '" ';
+            if (!$champsValide['responsable'] && !$modeModification) echo 'class="enRouge"';
+            echo '>' . $label . '</label>';
 
+            echo '<input type="text" name="' . $nomArgPOST . '" id="' . $nomArgPOST . '" placeholder="' . $placeholder . '" class="form-control" ';
+            if ($modeModification) {
+                echo 'value="' . $clientAModifier[$colonneBD] . '">';
+            } else if (isset($_POST['responsable'])) {
+                echo 'value="' . $_POST['responsable'] . '">';
+            } else {
+                echo 'value="">';
+            }
+        }
+
+        $insertionClient = "INSERT INTO clients (CODE_CLIENT, NOM_MAGASIN, RESPONSABLE, ADRESSE_1, ADRESSE_2, CODE_POSTAL, VILLE, TYPE_CLIENT, TELEPHONE, EMAIL) VALUES (:codeClient, :nomMagasin, :responsable, :adresse1, :adresse2, :cdp, :ville, :categorie, :noTel, :mail);";
+        $updateClient = "UPDATE clients SET CODE_CLIENT = :codeClient, NOM_MAGASIN = :nomMagasin, RESPONSABLE = :responsable, ADRESSE_1 = :adresse1, ADRESSE_2 = :adresse2, CODE_POSTAL = :cdp, VILLE = :ville, TYPE_CLIENT = :categorie, TELEPHONE = :noTel, EMAIL = :mail WHERE ID_CLIENT = :idClient;";
 
         //Connexions à la BD
         $host = "localhost";
@@ -40,6 +64,7 @@
             $pdo = getPDO($dns, $user, $pwd, $options);
 
             $categories = getListeCategorieFromBD($pdo);
+            $clients = getListeClientsFromBD($pdo);
 
             //Vérification des entrées
             $champsValide = array();
@@ -94,124 +119,75 @@
             foreach ($champsValide as $champs => $valeur) {
                 $toutChampsValide &= $valeur;
             }
-//        var_dump($champsValide);
+
+            //Client à modifier
+            $modeModification = isset($_POST['cleClient']) && $_POST['cleClient'] != 'none'
+                && in_array($_POST['cleClient'], array_keys($clients));
+            $clientAModifier = null;
+            if ($modeModification) {
+                $clientAModifier = $clients[$_POST['cleClient']];
+                var_dump($_POST);
+                var_dump($clientAModifier);
+            }
+
+
+            // var_dump($champsValide);
             if (!$toutChampsValide) {
                 ?>
                 <div class="row">
+                    <!-- Modification de client -->
+                    <div class="col-12 cadre">
+                        <h1>Modifier un client</h1>
+                        <form method="post" action="TP5-PDO-Q3.php">
+                            <div class="form-row">
+                                <div class="form-group col-12">
+                                    <label for="client">Client : </label><br>
+                                    <select name="cleClient" class="form-control" id="client">
+                                        <option value="none">Choisir dans la liste</option>
+                                        <?php
+                                        foreach ($clients as $idClient => $client) {
+                                            afficherOption($idClient, $client['NOM_MAGASIN'], isset($_POST['cleClient']) && $_POST['cleClient'] == $idClient);
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <div class="form-group col-12">
+                                    <button type="submit" class="btn btn-primary btn-block">Modifier le client</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Formulaire d'inscription -->
                     <div class="col-12  cadre">
                         <h1>Formulaire d'inscription</h1><br>
                         <form method="post" action="TP5-PDO-Q3.php">
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="codeClient"
-                                    <?php
-                                    if (!$champsValide['codeClient']) echo 'class="enRouge"';
-                                    echo '>Code Client : </label>'
-                                    ?>
-
-                                    <input type="text" id="codeClient" name="codeClient"
-                                           placeholder="Code client (maximum 15 caractères)"
-                                           class="form-control"
-                                    <?php
-                                    if (isset($_POST['codeClient'])) {
-                                        echo 'value="' . $_POST['codeClient'] . '">';
-                                    } else echo 'value="">'
-                                    ?>
+                                    <?php afficherSaisieTexte("Code client : ", "Code client (maximum 15 caractères)", "codeClient", 'CODE_CLIENT'); ?>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12">
-                                    <label for="nomMagasin"
-                                    <?php
-                                    if (!$champsValide['nomMagasin']) echo 'class="enRouge"';
-                                    echo '>Nom magasin : </label>'
-                                    ?>
-                                    <input type="text" name="nomMagasin" id="nomMagasin"
-                                           placeholder="Nom du magasin (maximum 35 caractères)"
-                                           class="form-control"
-                                    <?php
-                                    if (isset($_POST['nomMagasin'])) {
-                                        echo 'value="' . $_POST['nomMagasin'] . '">';
-                                    } else echo 'value="">'
-                                    ?>
+                                    <?php afficherSaisieTexte("Nom magasin : ", "Nom du magasin (maximum 35 caractères)", "nomMagasin", "NOM_MAGASIN"); ?>
                                 </div>
                                 <div class="form-group col-md-12">
-                                    <label for="responsable"
-                                    <?php
-                                    if (!$champsValide['responsable']) echo 'class="enRouge"';
-                                    echo '>Nom du Responsable : </label>'
-                                    ?>
-
-                                    <input type="text" name="responsable" id="responsable"
-                                           placeholder="Nom du responsable (maximum 35 caractères)"
-                                           class="form-control"
-                                    <?php
-                                    if (isset($_POST['responsable'])) {
-                                        echo 'value="' . $_POST['responsable'] . '">';
-                                    } else echo 'value="">'
-                                    ?>
+                                    <?php afficherSaisieTexte("Nom du responsable : ", "Nom du responsable (maximum 35 caractères)", "responsable", "RESPONSABLE"); ?>
                                 </div>
                                 <div class="form-group col-md-12">
-                                    <label for="adresse1"
-                                    <?php
-                                    if (!$champsValide['adresse1']) echo 'class="enRouge"';
-                                    echo '>Adresse ligne 1 : </label>'
-                                    ?>
-                                    <input type="text" name="adresse1" id="adresse1"
-                                           placeholder="Ligne d'adresse 1 (maximum 35 caractères)"
-                                           class="form-control"
-                                    <?php
-                                    if (isset($_POST['adresse1'])) {
-                                        echo 'value="' . $_POST['adresse1'] . '">';
-                                    } else echo 'value="">'
-                                    ?>
+                                    <?php afficherSaisieTexte("Adresse ligne 1 : ", "Ligne d'adresse 1 (maximum 35 caractères)", "adresse1", "ADRESSE_1"); ?>
                                 </div>
                                 <div class="form-group col-md-12">
-                                    <label for="adresse2"
-                                    <?php
-                                    if (!$champsValide['adresse2']) echo 'class="enRouge"';
-                                    echo '>Adresse ligne 2 : </label>'
-                                    ?>
-                                    <input type="text" name="adresse2" id="adresse2"
-                                           placeholder="Ligne d'adresse 2 (maximum 35 caractères)"
-                                           class="form-control"
-                                    <?php
-                                    if (isset($_POST['adresse2'])) {
-                                        echo 'value="' . $_POST['adresse2'] . '">';
-                                    } else echo 'value="">'
-                                    ?>
+                                    <?php afficherSaisieTexte("Adresse ligne 2 : ", "Ligne d'adresse 2 (maximum 35 caractères)", "adresse2", "ADRESSE_2"); ?>
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group col-md-2">
-                                    <label for="cdp"
-                                    <?php
-                                    if (!$champsValide['cdp']) echo 'class="enRouge"';
-                                    echo '>Code postal :</label>'
-                                    ?>
-                                    <input type="text" name="cdp" id="cdp"
-                                           placeholder="5 chiffres (Obligatoire)" class="form-control"
-                                    <?php
-                                    if (isset($_POST['cdp'])) {
-                                        echo 'value="' . $_POST['cdp'] . '">';
-                                    } else echo 'value="">'
-                                    ?>
+                                    <?php afficherSaisieTexte("Code postal : ", "5 chiffres (Obligatoire)", "cdp", "CODE_POSTAL"); ?>
                                 </div>
                                 <div class="form-group col-md-10">
-                                    <label for="ville"
-                                    <?php
-                                    if (!$champsValide['ville']) echo 'class="enRouge"';
-                                    echo '>Ville : </label>'
-                                    ?>
-                                    <input type="text" name="ville" id="ville"
-                                           placeholder="Taper votre bureau distributeur (maximum 35 caractères)"
-                                           class="form-control"
-                                    <?php
-                                    if (isset($_POST['ville'])) {
-                                        echo 'value="' . $_POST['ville'] . '">';
-                                    } else echo 'value="">'
-                                    ?>
+                                    <?php afficherSaisieTexte("Ville : ", "Saisissez votre bureau distributeur (maximum 35 caractères)", "ville", "VILLE"); ?>
                                 </div>
                             </div>
 
@@ -219,7 +195,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="categorie"
                                     <?php
-                                    if (!$champsValide['categorie']) echo 'class="enRouge"';
+                                    if (!$champsValide['categorie'] && !$modeModification) echo 'class="enRouge"';
                                     echo '>Catégorie : </label>'
                                     ?>
                                     <select name="categorie" class="form-control" id="categorie">
@@ -227,41 +203,23 @@
                                         <option value="none">Choisir dans la liste</option>
                                         <?php
                                         foreach ($categories as $codeType => $designation) {
-                                            afficherOption($codeType, $designation, isset($_POST['categorie']) && $_POST['categorie'] == $codeType);
+                                            $ligneEstSelectionner = (isset($_POST['categorie']) && $_POST['categorie'] == $codeType)
+                                                || ($modeModification && $clientAModifier['TYPE_CLIENT'] == $codeType);
+                                            afficherOption($codeType, $designation, $ligneEstSelectionner);
                                         }
                                         ?>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="noTel"
-                                    <?php
-                                    if (!$champsValide['noTel']) echo 'class="enRouge"';
-                                    echo '>Numéro de téléphone :</label>'
-                                    ?>
-                                    <input type="text" name="noTel" id="noTel"
-                                           placeholder="Format 0565656565" class="form-control"
-                                    <?php
-                                    if (isset($_POST['noTel'])) {
-                                        echo 'value="' . $_POST['noTel'] . '">';
-                                    } else echo 'value="">'
-                                    ?>
+                                    <?php afficherSaisieTexte("Numéro de téléphone : ", "Format 0565656565", "noTel", "TELEPHONE"); ?>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="mail"
-                                    <?php
-                                    if (!$champsValide['mail']) echo 'class="enRouge"';
-                                    echo '>Adresse Mail : </label>'
-                                    ?>
-                                    <input type="text" name="mail" id="mail" placeholder="Taper votre adresse E-mail"
-                                           class="form-control"
-                                    <?php
-                                    if (isset($_POST['mail'])) {
-                                        echo 'value="' . $_POST['mail'] . '">';
-                                    } else echo 'value="">'
-                                    ?>
+                                    <?php afficherSaisieTexte("Adresse mail : ", "Saisissez votre adresse E-mail", "mail", "EMAIL"); ?>
                                 </div>
                             </div>
 
+                            <input hidden name="modification" value="<?php echo $modeModification ?>">
+                            <input hidden name="cleClientAModifier" value="<?php echo $_POST['cleClient'] ?>">
                             <button type="submit" class="btn btn-primary btn-block">Valider le formulaire</button>
                             <br>
                         </form>
@@ -269,13 +227,35 @@
                 </div>
                 <?php
             } else {
-                $requeteInsertion = $pdo->prepare($insertionClient);
-                $requeteInsertion->execute($_POST);
-
                 echo '<div class="row">';
-                echo '<p>Insertion dans la base de donn&eacute;e effectu&eacute;</p></br>';
-                echo '<p>Identifiant d\'enregistrment cr&eacute;e : ' . $pdo->lastInsertId();
+                echo '<div class="col-12">';
+                //Modification dans la base de donnée
+                if ($_POST['modification']) {
+                    $requeteModification = $pdo->prepare($updateClient);
+                    $_POST['idClient'] = $_POST['cleClientAModifier'];
+                    var_dump($_POST);
+                    print($updateClient);
+                    $requeteModification->execute($_POST);
+
+                    echo '<p>Modification dans la base de donn&eacute;e effectu&eacute;</p></br>';
+                    echo '<p>Identifiant d\'enregistrment modifi&eacute; : ' . $_POST['cleClient'];
+                } else {
+                    //Insertion dans la base de donnée
+                    $requeteInsertion = $pdo->prepare($insertionClient);
+
+                    $requeteInsertion->execute($_POST);
+
+                    echo '<p>Insertion dans la base de donn&eacute;e effectu&eacute;</p></br>';
+                    echo '<p>Identifiant d\'enregistrment cr&eacute;e : ' . $pdo->lastInsertId();
+                }
                 echo '</div>';
+                echo '</div>';
+                ?>
+                <div class="col-12">
+                    <a href="TP5-PDO-Q3.php" class="btn btn-primary btn-block">Retour au formulaire</a>
+                </div>
+                <?php
+
             }
 
 
@@ -297,6 +277,7 @@
             </div>
 
             <?php
+            var_dump($e);
         } // Fin du catch
         ?>
     </div>
