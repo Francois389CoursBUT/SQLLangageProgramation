@@ -126,8 +126,6 @@
             $clientAModifier = null;
             if ($modeModification) {
                 $clientAModifier = $clients[$_POST['cleClient']];
-                var_dump($_POST);
-                var_dump($clientAModifier);
             }
 
 
@@ -217,9 +215,9 @@
                                     <?php afficherSaisieTexte("Adresse mail : ", "Saisissez votre adresse E-mail", "mail", "EMAIL"); ?>
                                 </div>
                             </div>
-
-                            <input hidden name="modification" value="<?php echo $modeModification ?>">
-                            <input hidden name="cleClientAModifier" value="<?php echo $_POST['cleClient'] ?>">
+                            <?php if ($modeModification) { ?>
+                                <input hidden name="cleClient" value="<?php echo $_POST['cleClient'] ?>">
+                            <?php } ?>
                             <button type="submit" class="btn btn-primary btn-block">Valider le formulaire</button>
                             <br>
                         </form>
@@ -229,14 +227,26 @@
             } else {
                 echo '<div class="row">';
                 echo '<div class="col-12">';
-                //Modification dans la base de donnée
-                if ($_POST['modification']) {
-                    $requeteModification = $pdo->prepare($updateClient);
-                    $_POST['idClient'] = $_POST['cleClientAModifier'];
-                    var_dump($_POST);
-                    print($updateClient);
-                    $requeteModification->execute($_POST);
 
+                //Modification dans la base de donnée
+                if (isset($_POST['cleClient'])) {
+                    $requeteModification = $pdo->prepare($updateClient);
+
+                    $requeteModification->bindParam(':codeClient', $_POST['codeClient']);
+                    $requeteModification->bindParam(':nomMagasin', $_POST['nomMagasin']);
+                    $requeteModification->bindParam(':responsable', $_POST['responsable']);
+                    $requeteModification->bindParam(':adresse1', $_POST['adresse1']);
+                    $requeteModification->bindParam(':adresse2', $_POST['adresse2']);
+                    $requeteModification->bindParam(':cdp', $_POST['cdp']);
+                    $requeteModification->bindParam(':ville', $_POST['ville']);
+                    $requeteModification->bindParam(':categorie', $_POST['categorie']);
+                    $requeteModification->bindParam(':noTel', $_POST['noTel']);
+                    $requeteModification->bindParam(':mail', $_POST['mail']);
+                    $requeteModification->bindParam(':idClient', $_POST['cleClient']);
+
+                    $requeteModification->execute();
+
+                    echo '<p>Ligne modifier'.$requeteModification->rowCount().'</p></br>';
                     echo '<p>Modification dans la base de donn&eacute;e effectu&eacute;</p></br>';
                     echo '<p>Identifiant d\'enregistrment modifi&eacute; : ' . $_POST['cleClient'];
                 } else {

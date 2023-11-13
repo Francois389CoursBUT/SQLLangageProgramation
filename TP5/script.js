@@ -11,7 +11,7 @@ const inputEmail = document.getElementById('mail');
 
 regexCodePostal = new RegExp("^(0[1-9]|[1-8]\\d|9[0-8])\\d{3}$",'gm');
 regexTelephone = new RegExp("^[0-9]{10}$",'gm');
-regexMail = new RegExp('^[a-z0-9.-_]+@{1}[0-9a-z.-]{2,}[.]{1}[a-z]{2,5}$','i');
+regexMail = new RegExp('^[a-z0-9.-_]+@[0-9a-z.-]{2,}[.][a-z]{2,5}$','i');
 
 inputCodeClient.addEventListener('blur', function (e) {
     if (inputCodeClient.value.length  > 15 || inputCodeClient.value === "") {
