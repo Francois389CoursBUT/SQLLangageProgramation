@@ -140,7 +140,7 @@
                             <div class="form-row">
                                 <div class="form-group col-12">
 
-                                    <label for="client">Selectionner un client à modifier </label><br>
+                                    <label for="selectionClientAModifier">Selectionner un client à modifier </label><br>
                                     <select name="cleClient" class="form-control" id="selectionClientAModifier">
                                         <option value="none">Cr&eacute;er un nouveau client</option>
                                         <?php

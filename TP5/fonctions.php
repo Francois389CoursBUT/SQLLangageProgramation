@@ -48,7 +48,7 @@ function getPDO(string $dns, string $user, string $pwd, array $options): PDO
 function getListeClientsFromBD(PDO $pdo) :array
 {
     $clients = array();
-    $requete = "SELECT * FROM clients ORDER BY CODE_CLIENT;";
+    $requete = "SELECT * FROM clients ORDER BY NOM_MAGASIN;";
     $resultat = $pdo->query($requete);
 
     while ($ligne = $resultat->fetch()) {
