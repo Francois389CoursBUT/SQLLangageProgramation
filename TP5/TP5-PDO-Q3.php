@@ -4,8 +4,12 @@
         <meta charset="utf-8">
         <title>TP 5 SQL dans un langage de programmation PDO</title>
 
-        <!-- Bootstrap CSS -->
+        <!-- JQuery -->
+        <script src="../JQuery-3.7.1/jquery-3.7.1.js" defer></script>
+
+        <!-- Bootstrap -->
         <link href="../bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">
+        <script src="../bootstrap-4.6.2-dist/js/bootstrap.js" defer></script>
 
         <!-- Lien vers mon CSS -->
         <link href="TP5-PDO.css" rel="stylesheet">
@@ -42,6 +46,18 @@
             }
         }
 
+        function afficheLigneFacture($ligne)
+        {
+            echo '<tr>';
+            echo '<th scope="col">' . $ligne['ARTICLE'] . '</th>';
+            echo '<th scope="col">' . $ligne['COULEUR'] . '</th>';
+            echo '<th scope="col">' . $ligne['TAILLE'] . '</th>';
+            echo '<th scope="col">' . $ligne['QUANTITE'] . '</th>';
+            echo '<th scope="col">' . $ligne['PRIX'] . '€</th>';
+            echo '<th scope="col">' . $ligne['PRIX'] * $ligne['QUANTITE'] . '&euro;</th>';
+            echo '</tr>';
+        }
+
         $insertionClient = "INSERT INTO clients (CODE_CLIENT, NOM_MAGASIN, RESPONSABLE, ADRESSE_1, ADRESSE_2, CODE_POSTAL, VILLE, TYPE_CLIENT, TELEPHONE, EMAIL) VALUES (:codeClient, :nomMagasin, :responsable, :adresse1, :adresse2, :cdp, :ville, :categorie, :noTel, :mail);";
         $updateClient = "UPDATE clients SET CODE_CLIENT = :codeClient, NOM_MAGASIN = :nomMagasin, RESPONSABLE = :responsable, ADRESSE_1 = :adresse1, ADRESSE_2 = :adresse2, CODE_POSTAL = :cdp, VILLE = :ville, TYPE_CLIENT = :categorie, TELEPHONE = :noTel, EMAIL = :mail WHERE ID_CLIENT = :idClient;";
 
@@ -58,6 +74,8 @@
             PDO::ATTR_EMULATE_PREPARES => false];
 
         $dns = "mysql:host=$host;dbname=$db;charset=$charset";
+
+
 
 
         try {
@@ -126,6 +144,7 @@
             $clientAModifier = null;
             if ($modeModification) {
                 $clientAModifier = $clients[$_POST['cleClient']];
+                $enteteFacture = getFactureFromClient($pdo, $_POST['cleClient']);
             }
 
 
@@ -141,13 +160,16 @@
                                 <div class="form-group col-12">
 
                                     <label for="selectionClientAModifier">Selectionner un client à modifier </label><br>
-                                    <select name="cleClient" class="form-control" id="selectionClientAModifier">
-                                        <option value="none">Cr&eacute;er un nouveau client</option>
-                                        <?php
-                                        foreach ($clients as $idClient => $client) {
-                                            afficherOption($idClient, $client['NOM_MAGASIN'], isset($_POST['cleClient']) && $_POST['cleClient'] == $idClient);
-                                        }
-                                        ?>
+                                    <select name="cleClient" class="form-control select-modifier"
+                                            id="selectionClientAModifier">
+                                        <option class="en-vert" value="none">Cr&eacute;er un nouveau client</option>
+                                        <optgroup label="Client existant">
+                                            <?php
+                                            foreach ($clients as $idClient => $client) {
+                                                afficherOption($idClient, $client['NOM_MAGASIN'], isset($_POST['cleClient']) && $_POST['cleClient'] == $idClient);
+                                            }
+                                            ?>
+                                        </optgroup>
                                     </select>
                                 </div>
                             </div>
@@ -156,7 +178,14 @@
 
                     <!-- Formulaire d'inscription -->
                     <div class="col-12  cadre">
-                        <h1>Formulaire d'inscription</h1><br>
+                        <?php
+                        if ($modeModification) {
+                            echo '<h1>Modification du client : ' . $clientAModifier['NOM_MAGASIN'] . '</h1>';
+                        } else {
+                            echo '<h1>Formulaire d\'inscription</h1>';
+                        }
+                        ?>
+                        <br>
                         <form method="post" action="TP5-PDO-Q3.php">
                             <div class="form-row">
                                 <div class="form-group col-md-6">
@@ -220,11 +249,96 @@
                             <br>
                         </form>
                     </div>
+
+                    <!-- Liste des factures -->
+                    <?php
+                    if ($modeModification) {
+                        ?>
+                        <div class="col-12 cadre">
+                            <h1>Liste des factures de <?php echo $clientAModifier['NOM_MAGASIN'] ?></h1>
+                            <?php
+                            if (!empty($enteteFacture)) {
+                                ?>
+                                <div class="accordion" id="accordionExample">
+                                    <?php
+                                    $estPremier = true;
+                                    foreach ($enteteFacture as $facture) {
+                                        $lignesFacture = getDetailFacture($pdo, $facture['ID_ENT_FCT']);
+                                        $numeroFacture = $facture['NO_FCT'];
+                                        ?>
+                                        <div class="card">
+                                            <!-- Entete de l'accordeon -->
+                                            <div class="card-header" id="headingOne">
+                                                <div class="row" type="button" data-toggle="collapse"
+                                                     data-target="#collapse<?php echo $numeroFacture ?>"
+                                                     aria-expanded="true"
+                                                     aria-controls="collapse<?php echo $numeroFacture ?>">
+                                                    <?php
+                                                        afficherEnteteAccordeon($lignesFacture, $facture);
+                                                        ?>
+                                                </div>
+                                            </div>
+
+                                            <!-- Contenu de l'accordeon -->
+                                            <div id="collapse<?php echo $numeroFacture ?>"
+                                                 class="collapse <?php if ($estPremier) echo "show" ?>"
+                                                 aria-labelledby="headingOne" data-parent="#accordionExample">
+                                                <div class="pas-de-padding card-body">
+                                                    <?php
+                                                    if (empty($lignesFacture)) {
+                                                        echo 'Pas de détail pour cette facture';
+                                                    } else {
+                                                        ?>
+                                                        <table class="table table-striped">
+                                                            <thead class="thead-dark">
+                                                            <tr>
+                                                                <th scope="col">Articles</th>
+                                                                <th scope="col">Couleur</th>
+                                                                <th scope="col">Taille</th>
+                                                                <th scope="col">Quantit&eacute;</th>
+                                                                <th scope="col">Prix Unitaire</th>
+                                                                <th scope="col">Prix Total</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <?php
+                                                            foreach ($lignesFacture as $ligne) {
+                                                                afficheLigneFacture($ligne);
+                                                            }
+                                                            ?>
+                                                            </tbody>
+                                                        </table>
+                                                        <?php
+                                                    }
+                                                    ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php
+                                        $estPremier = false;
+                                    }
+                                    ?>
+                                </div>
+                                <?php
+                            } else {
+                                ?>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h3 class="centrer-texte">Pas de facture pour <?php echo $clientAModifier['NOM_MAGASIN'] ?></h3>
+                                    </div>
+                                </div>
+                            <?php
+                            }
+                            ?>
+                        </div>
+                        <?php
+                    }
+                    ?>
                 </div>
                 <?php
             } else {
                 echo '<div class="row">';
-                echo '<div class="col-12">';
+                echo '<div class="col-12 cadre">';
 
                 //Modification dans la base de donnée
                 if (isset($_POST['cleClient'])) {
@@ -244,28 +358,37 @@
 
                     $requeteModification->execute();
 
-                    echo '<p>Ligne modifier' . $requeteModification->rowCount() . '</p></br>';
-                    echo '<p>Modification dans la base de donn&eacute;e effectu&eacute;</p></br>';
-                    echo '<p>Identifiant d\'enregistrment modifi&eacute; : ' . $_POST['cleClient'];
+                    echo '<h1 class="centrer-texte">Modification dans la base de donn&eacute;e effectu&eacute;</h1>';
+
+                    echo '<div class="row">';
+                    echo '<div class="col-5 centrer-texte">';
+                    echo '<h3>Nombre de lignes modifi&eacute; ' . $requeteModification->rowCount() . '</h3>';
+                    echo '</div>';
+
+                    echo '<div class="col-7 centrer-texte">';
+                    echo '<h3>Identifiant d\'enregistrment modifi&eacute; : ' . $_POST['cleClient'] . '</h3>';
+                    echo '</div>';
+                    echo '</div>';
                 } else {
                     //Insertion dans la base de donnée
                     $requeteInsertion = $pdo->prepare($insertionClient);
-
                     $requeteInsertion->execute($_POST);
-
-                    echo '<p>Insertion dans la base de donn&eacute;e effectu&eacute;</p></br>';
+                    echo '<h1 class="centrer-texte">Insertion dans la base de donn&eacute;e effectu&eacute;</h1></br>';
+                    echo '<div class="row">';
+                    echo '<div class="col-12 centrer-texte">';
                     echo '<p>Identifiant d\'enregistrment cr&eacute;e : ' . $pdo->lastInsertId();
+                    echo '</div>';
+                    echo '</div>';
                 }
-                echo '</div>';
-                echo '</div>';
                 ?>
                 <div class="col-12">
                     <a href="TP5-PDO-Q3.php" class="btn btn-primary btn-block">Retour au formulaire</a>
                 </div>
                 <?php
+                echo '</div>';
+                echo '</div>';
 
             }
-
 
         } catch (PDOException $e) {
             ?>

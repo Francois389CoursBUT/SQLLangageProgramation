@@ -38,4 +38,14 @@ th {
     color: red;
 }
 
+.entete-accordeon {
+    font-size: 1.5em; /* Taille de la police */
+}
 
+.centrer-texte {
+    text-align: center; /* Alignement texte centré */
+}
+
+.pas-de-padding {
+    padding: 0.25rem !important; /* Marge intérieure */
+}
