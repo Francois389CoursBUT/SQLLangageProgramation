@@ -1,0 +1,15 @@
+-- Etape 2
+DELIMITER //
+DROP TRIGGER IF EXISTS `trg_after_update_client`//
+CREATE TRIGGER `trg_after_update_client`
+    AFTER UPDATE
+    ON `clients`
+FOR EACH ROW
+BEGIN
+    IF OLD.TELEPHONE != NEW.TELEPHONE THEN
+        INSERT INTO histo_modifs_clients (MODE, ID_CLIENT, NOM_COLONNE, ANCIENNE_VALEUR, NOUVELLE_VALEUR, LADATE,
+                                          LHEURE, UTILISATEUR)
+        VALUES ('M', NEW.ID_CLIENT, 'TELEPHONE', OLD.TELEPHONE, NEW.TELEPHONE, CURDATE(), CURTIME(), CURRENT_USER());
+    END IF;
+
+END//
